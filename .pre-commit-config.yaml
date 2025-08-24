@@ -1,0 +1,33 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+  - repo: local
+    hooks:
+      - id: cargo-fmt
+        name: cargo fmt
+        entry: bash -c "cd rust-launcher && cargo fmt --all -- --check"
+        language: system
+        types: [rust]
+        files: ^rust-launcher/
+      - id: cargo-clippy
+        name: cargo clippy
+        entry: bash -c "cd rust-launcher && cargo clippy --all -- -D warnings"
+        language: system
+        types: [rust]
+        files: ^rust-launcher/
+  - repo: https://github.com/dnephin/pre-commit-golang
+    rev: master
+    hooks:
+      - id: go-fmt
+        name: go fmt
+        files: ^go-launcher/.*\.go$
+      - id: go-vet
+        name: go vet
+        entry: bash -c "cd go-launcher && go vet"
+        language: system
+        types: [go]
+        files: ^go-launcher/.*\.go$

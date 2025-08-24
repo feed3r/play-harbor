@@ -1,6 +1,6 @@
 # Contributing to PlayHarbor
 
-Thank you for your interest in contributing to **PlayHarbor**!  
+Thank you for your interest in contributing to **PlayHarbor**!
 We welcome contributions from everyone, whether it's bug fixes, new features, documentation improvements, or testing.
 
 ## How to Contribute

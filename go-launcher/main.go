@@ -11,11 +11,11 @@ import (
 )
 
 func main() {
-	 if len(os.Args) != 3 {
-	 		fmt.Println("ERROR: Needs launch URL and EXE Name")
-	 		fmt.Println("Usage: playdock.exe <epicUrl> <exeName>")
-	 		return
-	 	}
+	if len(os.Args) != 3 {
+		fmt.Println("ERROR: Needs launch URL and EXE Name")
+		fmt.Println("Usage: playdock.exe <epicUrl> <exeName>")
+		return
+	}
 
 	epicUrl := os.Args[1]
 	exeName := os.Args[2]

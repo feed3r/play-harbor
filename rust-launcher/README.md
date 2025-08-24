@@ -1,6 +1,6 @@
 # Rust Launcher
 
-This is the Rust implementation of the **PlayHarbor** utility.  
+This is the Rust implementation of the **PlayHarbor** utility.
 It provides the same functionality as the Go version:
 
 - Launch an Epic Games Store title using its launch URL.
