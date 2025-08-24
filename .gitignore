@@ -1,0 +1,17 @@
+
+# Python virtualenv
+.venv/
+
+# Rust build artifacts
+rust-launcher/target/
+
+# Go build artifacts
+go-launcher/playdock.exe
+go-launcher/steamlauncher.exe
+
+# Editor/OS files
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
