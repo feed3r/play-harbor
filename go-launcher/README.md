@@ -1,6 +1,6 @@
 # Go Launcher
 
-This is the Go implementation of the **Epic Game Launcher** utility.  
+This is the Go implementation of the **PlayHarbor** utility.  
 It allows you to start an Epic Games Store title using its launch URL, 
 wait for the game process to start, and keep running until the game exits.  
 This is useful when launching Epic games through Steam or Steam Link.
@@ -13,7 +13,7 @@ The launcher expects **two arguments**:
 
 ### Example
 ```bash
-steamlauncher "com.epicgames.launcher://apps/Fortnite?action=launch" "FortniteClient-Win64-Shipping"
+playdock.exe "com.epicgames.launcher://apps/Fortnite?action=launch" "FortniteClient-Win64-Shipping"
 ```
 
 The program will:
@@ -29,10 +29,10 @@ Make sure you have [Go installed](https://go.dev/dl/).
 From this directory:
 
 ```bash
-go build -o steamlauncher.exe main.go
+go build -o playdock.exe main.go
 ```
 
-This will produce a standalone `steamlauncher.exe` binary.
+This will produce a standalone `playdock.exe` binary.
 
 ## Dependencies
 

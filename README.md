@@ -1,4 +1,4 @@
-# Epic Steam Launcher
+# PlayHarbor
 
 This project provides simple utilities to launch Epic Games Store titles 
 in a way that is also visible to Steam and Steam Link.

@@ -9,7 +9,7 @@ fn main() {
 
     if args.len() != 3 {
         eprintln!("ERROR: Needs launch URL and EXE Name");
-        eprintln!("Usage: epic_game_launcher <epicUrl> <exeName>");
+        eprintln!("Usage: playdock.exe <epicUrl> <exeName>");
         return;
     }
 
