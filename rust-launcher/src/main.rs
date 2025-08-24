@@ -2,7 +2,7 @@ use std::env;
 use std::process::Command;
 use std::thread::sleep;
 use std::time::Duration;
-use sysinfo::{Processes, System, SystemExt, PidExt};
+use sysinfo::System;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -40,7 +40,7 @@ fn main() {
     for (pid, process) in sys.processes() {
         let name = process.name().to_lowercase();
         if name == exe_name.to_lowercase() || name == format!("{}.exe", exe_name.to_lowercase()) {
-            game_pid = Some(pid.clone());
+            game_pid = Some(*pid);
             break;
         }
     }

@@ -1,8 +1,8 @@
 # Go Launcher
 
-This is the Go implementation of the **PlayHarbor** utility.  
-It allows you to start an Epic Games Store title using its launch URL, 
-wait for the game process to start, and keep running until the game exits.  
+This is the Go implementation of the **PlayHarbor** utility.
+It allows you to start an Epic Games Store title using its launch URL,
+wait for the game process to start, and keep running until the game exits.
 This is useful when launching Epic games through Steam or Steam Link.
 
 ## Usage

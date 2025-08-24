@@ -1,14 +1,14 @@
 # PlayHarbor
 
-This project provides simple utilities to launch Epic Games Store titles 
+This project provides simple utilities to launch Epic Games Store titles
 in a way that is also visible to Steam and Steam Link.
 
 Currently, two implementations are available:
 - `go-launcher/`: lightweight Go version.
 - `rust-launcher/`: Rust version with future extensibility.
 
-The long-term goal is to create a more complete application 
-to manage Epic Games Store titles and improve integration with Steam and other game 
+The long-term goal is to create a more complete application
+to manage Epic Games Store titles and improve integration with Steam and other game
 management softwares.
 
 ## Roadmap
@@ -20,7 +20,7 @@ management softwares.
 
 ## Contributing
 
-We welcome contributions from everyone!  
+We welcome contributions from everyone!
 
 Before contributing, please read our [Contributing Guide](CONTRIBUTING.md) which explains:
 - How to submit issues and pull requests
@@ -30,4 +30,3 @@ Before contributing, please read our [Contributing Guide](CONTRIBUTING.md) which
 
 ## License
 This project is licensed under the [Apache License 2.0](LICENSE).
-

@@ -9,4 +9,3 @@
 - Integration with Steam (overlay support, metadata).
 - Optional GUI for easier game selection.
 - Cross-platform support (Linux / Windows / Steam Deck).
-
