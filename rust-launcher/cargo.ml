@@ -1,7 +1,0 @@
-[package]
-name = "play_harbor"
-version = "0.0.1"
-edition = "2021"
-
-[dependencies]
-sysinfo = "0.30"
