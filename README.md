@@ -31,7 +31,7 @@ management softwares.
 
 ## Roadmap
 - [x] Initial launcher in Go
-- [ ] Initial launcher in Rust
+- [x] Initial launcher in Rust
 - [ ] Steam overlay detection
 - [ ] Epic games library parsing
 - [ ] Unified launcher with GUI
