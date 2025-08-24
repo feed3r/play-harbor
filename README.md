@@ -1,3 +1,12 @@
+
+[![CI](https://github.com/feed3r/play-harbor/actions/workflows/ci.yml/badge.svg)](https://github.com/feed3r/play-harbor/actions/workflows/ci.yml)
+[![Go Version](https://img.shields.io/badge/go-1.22-blue.svg)](https://golang.org/doc/go1.22)
+[![Rust Version](https://img.shields.io/badge/rust-stable-orange.svg)](https://www.rust-lang.org/)
+[![Go Coverage](https://img.shields.io/badge/go--coverage-pending-lightgrey.svg)](https://github.com/feed3r/play-harbor/actions/workflows/ci.yml)
+[![Rust Coverage](https://img.shields.io/badge/rust--coverage-pending-lightgrey.svg)](https://github.com/feed3r/play-harbor/actions/workflows/ci.yml)
+[![Go Lint](https://img.shields.io/badge/go--lint-passing-brightgreen.svg)](https://github.com/feed3r/play-harbor/actions/workflows/ci.yml)
+[![Rust Lint](https://img.shields.io/badge/rust--lint-passing-brightgreen.svg)](https://github.com/feed3r/play-harbor/actions/workflows/ci.yml)
+
 # PlayHarbor
 
 This project provides simple utilities to launch Epic Games Store titles
