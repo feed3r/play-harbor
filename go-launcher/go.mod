@@ -1,4 +1,4 @@
-module github.com/feed3r/epic-game-launcher/go-launcher
+module github.com/feed3r/play-harbor/go-launcher
 
 go 1.22
 

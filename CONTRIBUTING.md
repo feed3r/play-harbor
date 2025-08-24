@@ -1,6 +1,6 @@
-# Contributing to Epic Game Launcher
+# Contributing to PlayHarbor
 
-Thank you for your interest in contributing to **Epic Game Launcher**!  
+Thank you for your interest in contributing to **PlayHarbor**!  
 We welcome contributions from everyone, whether it's bug fixes, new features, documentation improvements, or testing.
 
 ## How to Contribute
@@ -82,7 +82,7 @@ If you find a bug or have a suggestion, please open an **issue** with a clear de
 
 ---
 
-Thank you for contributing to Epic Game Launcher!
+Thank you for contributing to PlayHarbor!
 
 ---
 

@@ -1,5 +1,5 @@
 [package]
-name = "epic_game_launcher"
+name = "play_harbor"
 version = "0.0.1"
 edition = "2021"
 

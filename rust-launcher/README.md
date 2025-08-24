@@ -1,6 +1,6 @@
 # Rust Launcher
 
-This is the Rust implementation of the **Epic Game Launcher** utility.  
+This is the Rust implementation of the **PlayHarbor** utility.  
 It provides the same functionality as the Go version:
 
 - Launch an Epic Games Store title using its launch URL.
@@ -17,7 +17,7 @@ The launcher expects **two arguments**:
 
 ### Example
 ```bash
-cargo run -- "com.epicgames.launcher://apps/Fortnite?action=launch" "FortniteClient-Win64-Shipping"
+playdock.exe "com.epicgames.launcher://apps/Fortnite?action=launch" "FortniteClient-Win64-Shipping"
 ```
 
 The program will:
@@ -39,7 +39,7 @@ cargo build --release
 The compiled binary will be in:
 
 ```
-target/release/epic_game_launcher.exe
+target/release/playdock.exe
 ```
 
 ## Dependencies
