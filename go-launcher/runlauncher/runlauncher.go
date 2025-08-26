@@ -18,7 +18,7 @@ func RunLauncher(argsList []string) error {
 	}
 	// Wait a few seconds to give the game time to start
 	// You can modularize this in the future
-	// time.Sleep(5 * time.Second)
+	time.Sleep(5 * time.Second)
 	proc, err := processutil.FindGameProcess(exeName)
 	if err != nil {
 		return err
