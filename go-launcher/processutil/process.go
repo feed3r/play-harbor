@@ -2,9 +2,10 @@ package processutil
 
 import (
 	"fmt"
-	"github.com/shirou/gopsutil/v3/process"
 	"strings"
 	"time"
+
+	"github.com/shirou/gopsutil/v3/process"
 )
 
 // ProcessLike abstracts process.Process for testability
@@ -25,15 +26,47 @@ func (pw *processWrapper) Name() (string, error) {
 	return pw.p.Name()
 }
 
-var ProcessesFunc = func() ([]ProcessLike, error) {
+var ProcessesFunc = func(searchName ...string) ([]ProcessLike, error) {
 	procs, err := Processes()
 	if err != nil {
 		return nil, err
 	}
-	out := make([]ProcessLike, len(procs))
-	for i, p := range procs {
-		out[i] = &processWrapper{p: p}
+
+	// If no search criteria, return all processes
+	if len(searchName) == 0 {
+		out := make([]ProcessLike, len(procs))
+		for i, p := range procs {
+			out[i] = &processWrapper{p: p}
+		}
+		return out, nil
 	}
+
+	// Search for specific process(es)
+	search := strings.ToLower(searchName[0])
+	searchWithExt := search
+	if !strings.HasSuffix(search, ".exe") {
+		searchWithExt = search + ".exe"
+	}
+
+	var out []ProcessLike
+	for _, p := range procs {
+		name, err := p.Name()
+		if err != nil {
+			continue // Skip processes we can't get names for
+		}
+
+		lowerName := strings.ToLower(name)
+		// Check both with and without .exe extension
+		if lowerName == search || lowerName == searchWithExt {
+			out = append(out, &processWrapper{p: p})
+		} else if strings.HasSuffix(lowerName, ".exe") {
+			nameWithoutExt := strings.TrimSuffix(lowerName, ".exe")
+			if nameWithoutExt == search {
+				out = append(out, &processWrapper{p: p})
+			}
+		}
+	}
+
 	return out, nil
 }
 
@@ -41,17 +74,17 @@ var Processes = process.Processes
 var PidExists = process.PidExists
 
 func FindGameProcess(exeName string) (ProcessLike, error) {
-	procs, err := ProcessesFunc()
+	procs, err := ProcessesFunc(exeName)
 	if err != nil {
 		return nil, fmt.Errorf("Error listing processes: %v", err)
 	}
-	for _, p := range procs {
-		name, _ := p.Name()
-		if strings.EqualFold(name, exeName+".exe") || strings.EqualFold(name, exeName) {
-			return p, nil
-		}
+
+	if len(procs) == 0 {
+		return nil, fmt.Errorf("Could not find a process with name: %s", exeName)
 	}
-	return nil, fmt.Errorf("Could not find a process with name: %s", exeName)
+
+	// Return the first match
+	return procs[0], nil
 }
 
 func WaitForProcessExit(proc ProcessLike) error {
