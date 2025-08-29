@@ -8,6 +8,8 @@ rust-launcher/target/
 # Go build artifacts
 go-launcher/playdock.exe
 go-launcher/steamlauncher.exe
+go-launcher/go-launcher.exe
+
 
 # Editor/OS files
 *.swp
@@ -15,8 +17,12 @@ go-launcher/steamlauncher.exe
 *~
 .DS_Store
 Thumbs.db
+.vscode/launch.json
+
 
 # Go coverage/test output
 *.out
 *.coverprofile
 cover.out
+
+docs/MyGames.md
