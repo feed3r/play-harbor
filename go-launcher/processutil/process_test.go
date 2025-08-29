@@ -2,9 +2,10 @@ package processutil
 
 import (
 	"fmt"
-	"github.com/shirou/gopsutil/v3/process"
 	"os"
 	"testing"
+
+	"github.com/shirou/gopsutil/v3/process"
 )
 
 func TestProcessWrapperWithRealProcess(t *testing.T) {
@@ -68,7 +69,7 @@ func TestFindGameProcess_Found(t *testing.T) {
 
 	// Simulate process found
 	mp := &mockProcess{pid: 123, name: "Game.exe"}
-	ProcessesFunc = func() ([]ProcessLike, error) {
+	ProcessesFunc = func(searchName ...string) ([]ProcessLike, error) {
 		return []ProcessLike{mp}, nil
 	}
 
@@ -86,7 +87,7 @@ func TestFindGameProcess_ErrorFromProcessesFunc(t *testing.T) {
 	defer func() { ProcessesFunc = oldFunc }()
 
 	// Simulate error from ProcessesFunc
-	ProcessesFunc = func() ([]ProcessLike, error) {
+	ProcessesFunc = func(searchName ...string) ([]ProcessLike, error) {
 		return nil, fmt.Errorf("mock error")
 	}
 
@@ -164,7 +165,7 @@ func TestFindGameProcess_NameError(t *testing.T) {
 
 	// Simulate process with Name() error
 	ep := &errorNameProcess{pid: 555}
-	ProcessesFunc = func() ([]ProcessLike, error) {
+	ProcessesFunc = func(searchName ...string) ([]ProcessLike, error) {
 		return []ProcessLike{ep}, nil
 	}
 
