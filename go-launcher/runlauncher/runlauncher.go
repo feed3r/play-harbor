@@ -3,6 +3,7 @@ package runlauncher
 import (
 	"fmt"
 	"time"
+
 	"github.com/feed3r/play-harbor/go-launcher/args"
 	"github.com/feed3r/play-harbor/go-launcher/launcher"
 	"github.com/feed3r/play-harbor/go-launcher/processutil"
@@ -15,11 +16,11 @@ func RunLauncher(argsList []string) error {
 		return err
 	}
 	if err := launcher.LaunchGame(epicUrl); err != nil {
-		return fmt.Errorf("Failed to start URL: %v", err)
+		return fmt.Errorf("failed to start URL: %v", err)
 	}
 	// Wait a few seconds to give the game time to start
 	// You can modularize this in the future
-	time.Sleep(5 * time.Second)
+	time.Sleep(30 * time.Second)
 	proc, err := processutil.FindGameProcess(exeName)
 	if err != nil {
 		return err
