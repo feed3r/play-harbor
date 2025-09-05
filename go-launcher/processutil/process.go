@@ -76,15 +76,17 @@ var PidExists = process.PidExists
 func FindGameProcess(exeName string) (ProcessLike, error) {
 	procs, err := ProcessesFunc(exeName)
 	if err != nil {
-		return nil, fmt.Errorf("Error listing processes: %v", err)
+		return nil, fmt.Errorf("error listing processes: %v", err)
 	}
 
-	if len(procs) == 0 {
-		return nil, fmt.Errorf("Could not find a process with name: %s", exeName)
+	// Return the first process with a valid name
+	for _, proc := range procs {
+		if _, err := proc.Name(); err == nil {
+			return proc, nil
+		}
 	}
 
-	// Return the first match
-	return procs[0], nil
+	return nil, fmt.Errorf("could not find a process with name: %s", exeName)
 }
 
 func WaitForProcessExit(proc ProcessLike) error {

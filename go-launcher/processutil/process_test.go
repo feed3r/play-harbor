@@ -1,3 +1,4 @@
+// Unit tests for processutil package. These tests cover process abstraction, process search, and process exit logic.
 package processutil
 
 import (
@@ -9,6 +10,7 @@ import (
 )
 
 func TestProcessWrapperWithRealProcess(t *testing.T) {
+	// Test processWrapper with the real current process
 	pid := int32(os.Getpid())
 	proc, err := process.NewProcess(pid)
 	if err != nil {
@@ -25,15 +27,11 @@ func TestProcessWrapperWithRealProcess(t *testing.T) {
 	if name == "" {
 		t.Errorf("expected non-empty name, got empty string")
 	}
-	// Test WaitForProcessExit with wrapper
-	err = WaitForProcessExit(w)
-	if err != nil {
-		t.Errorf("expected no error from WaitForProcessExit, got %v", err)
-	}
 }
 
 // Mock for process.Process
 type mockProcess struct {
+	// mockProcess simulates a process for testing purposes
 	pid  int32
 	name string
 }
@@ -42,6 +40,7 @@ func (m *mockProcess) Pid() int32            { return m.pid }
 func (m *mockProcess) Name() (string, error) { return m.name, nil }
 
 type mockProcessWrapper struct {
+	// mockProcessWrapper simulates a processWrapper for testing purposes
 	pid  int32
 	name string
 }
@@ -50,6 +49,7 @@ func (pw *mockProcessWrapper) Pid() int32            { return pw.pid }
 func (pw *mockProcessWrapper) Name() (string, error) { return pw.name, nil }
 
 func TestProcessWrapperMethods(t *testing.T) {
+	// Test the mock process wrapper methods for correct values
 	w := &mockProcessWrapper{pid: 321, name: "MockName"}
 	if w.Pid() != 321 {
 		t.Errorf("expected pid 321, got %d", w.Pid())
@@ -64,6 +64,7 @@ func TestProcessWrapperMethods(t *testing.T) {
 }
 
 func TestFindGameProcess_Found(t *testing.T) {
+	// Test FindGameProcess when the process is found
 	oldFunc := ProcessesFunc
 	defer func() { ProcessesFunc = oldFunc }()
 
@@ -83,6 +84,7 @@ func TestFindGameProcess_Found(t *testing.T) {
 }
 
 func TestFindGameProcess_ErrorFromProcessesFunc(t *testing.T) {
+	// Test FindGameProcess when ProcessesFunc returns an error
 	oldFunc := ProcessesFunc
 	defer func() { ProcessesFunc = oldFunc }()
 
@@ -92,12 +94,13 @@ func TestFindGameProcess_ErrorFromProcessesFunc(t *testing.T) {
 	}
 
 	_, err := FindGameProcess("Game.exe")
-	if err == nil || err.Error() != "Error listing processes: mock error" {
+	if err == nil || err.Error() != "error listing processes: mock error" {
 		t.Errorf("expected error from ProcessesFunc, got: %v", err)
 	}
 }
 
 func TestWaitForProcessExit_ExitsImmediately(t *testing.T) {
+	// Test WaitForProcessExit when the process does not exist (should exit immediately)
 	oldPidExists := PidExists
 	defer func() { PidExists = oldPidExists }()
 
@@ -115,6 +118,7 @@ func TestWaitForProcessExit_ExitsImmediately(t *testing.T) {
 }
 
 func TestWaitForProcessExit_WaitsThenExits(t *testing.T) {
+	// Test WaitForProcessExit when the process exists for a few cycles before exiting
 	oldPidExists := PidExists
 	defer func() { PidExists = oldPidExists }()
 	calls := 0
@@ -138,6 +142,7 @@ func TestWaitForProcessExit_WaitsThenExits(t *testing.T) {
 }
 
 func TestWaitForProcessExit_ErrorFromPidExists(t *testing.T) {
+	// Test WaitForProcessExit when PidExists returns an error (should ignore the error)
 	oldPidExists := PidExists
 	defer func() { PidExists = oldPidExists }()
 	PidExists = func(pid int32) (bool, error) {
@@ -153,6 +158,7 @@ func TestWaitForProcessExit_ErrorFromPidExists(t *testing.T) {
 }
 
 type errorNameProcess struct {
+	// errorNameProcess simulates a process that returns an error on Name()
 	pid int32
 }
 
@@ -160,6 +166,7 @@ func (e *errorNameProcess) Pid() int32            { return e.pid }
 func (e *errorNameProcess) Name() (string, error) { return "", fmt.Errorf("name error") }
 
 func TestFindGameProcess_NameError(t *testing.T) {
+	// Test FindGameProcess when the process returns an error on Name()
 	oldFunc := ProcessesFunc
 	defer func() { ProcessesFunc = oldFunc }()
 
@@ -170,7 +177,7 @@ func TestFindGameProcess_NameError(t *testing.T) {
 	}
 
 	_, err := FindGameProcess("Game.exe")
-	if err == nil || err.Error() != "Could not find a process with name: Game.exe" {
+	if err == nil || err.Error() != "could not find a process with name: Game.exe" {
 		t.Errorf("expected not found error, got: %v", err)
 	}
 }
