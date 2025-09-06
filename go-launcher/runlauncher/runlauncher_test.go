@@ -7,6 +7,7 @@ import (
 
 	"github.com/feed3r/play-harbor/go-launcher/config"
 	"github.com/feed3r/play-harbor/go-launcher/processutil"
+	"github.com/stretchr/testify/assert"
 )
 
 // ProcessLike mock
@@ -65,9 +66,7 @@ func TestRunLauncher_ManagerRunning(t *testing.T) {
 	}
 
 	err := r.Launch([]string{"epic://game", "game.exe"})
-	if err != nil {
-		t.Errorf("RunLauncher con manager attivo dovrebbe restituire nil, ottenuto: %v", err)
-	}
+	assert.NoError(t, err, "RunLauncher con manager attivo dovrebbe restituire nil")
 }
 
 func TestRunLauncher_ManagerNotRunning(t *testing.T) {
@@ -99,9 +98,7 @@ func TestRunLauncher_ManagerNotRunning(t *testing.T) {
 	}
 
 	err := r.Launch([]string{"epic://game", "game.exe"})
-	if err != nil {
-		t.Errorf("RunLauncher senza manager dovrebbe restituire nil, ottenuto: %v", err)
-	}
+	assert.NoError(t, err, "RunLauncher senza manager dovrebbe restituire nil")
 }
 
 func TestRunLauncher_LaunchGameError(t *testing.T) {
@@ -133,7 +130,5 @@ func TestRunLauncher_LaunchGameError(t *testing.T) {
 	}
 
 	err := r.Launch([]string{"epic://game", "game.exe"})
-	if err == nil {
-		t.Error("RunLauncher dovrebbe restituire errore se LaunchGame fallisce")
-	}
+	assert.Error(t, err, "RunLauncher dovrebbe restituire errore se LaunchGame fallisce")
 }

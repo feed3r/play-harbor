@@ -4,6 +4,10 @@ import (
 	"bytes"
 	"io"
 	"testing"
+	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const TEST_CONFIG_YAML = `EpicGamesStore:
@@ -21,17 +25,9 @@ func TestLoadConfig(t *testing.T) {
 	}
 
 	cfg, err := LoadConfig("dummy_path.yaml")
-	if err != nil {
-		t.Fatalf("LoadConfig failed: %v", err)
-	}
+	require.NoError(t, err, "LoadConfig fallita")
 
-	if cfg.EpicGamesStore.Executable != "EpicGamesLauncher.exe" {
-		t.Errorf("EpicGamesStore.Executable: got %q, want %q", cfg.EpicGamesStore.Executable, "EpicGamesLauncher.exe")
-	}
-	if cfg.Global.SleepWithManager != 10_000_000_000 {
-		t.Errorf("Global.SleepWithManager: got %v, want 10s", cfg.Global.SleepWithManager)
-	}
-	if cfg.Global.MaxPollingAttempts != 20 {
-		t.Errorf("Global.MaxPollingAttempts: got %d, want 20", cfg.Global.MaxPollingAttempts)
-	}
+	assert.Equal(t, "EpicGamesLauncher.exe", cfg.EpicGamesStore.Executable, "EpicGamesStore.Executable")
+	assert.Equal(t, time.Duration(10_000_000_000), cfg.Global.SleepWithManager, "Global.SleepWithManager")
+	assert.Equal(t, 20, cfg.Global.MaxPollingAttempts, "Global.MaxPollingAttempts")
 }
