@@ -37,8 +37,9 @@ func init() {
 	}
 }
 
-func TestRunLauncher_ManagerRunning(t *testing.T) {
-	r := &RunLauncher{
+// Helper per creare un RunLauncher di default per i test
+func newTestRunLauncher() *RunLauncher {
+	rl := &RunLauncher{
 		Config: &config.Config{
 			Global: config.GlobalConfig{
 				SleepWithManager:    1 * time.Millisecond,
@@ -48,10 +49,15 @@ func TestRunLauncher_ManagerRunning(t *testing.T) {
 			},
 		},
 	}
-	r.SleepFunc = func() {}
-	r.PollGameProcessFunc = func(name string) (processutil.ProcessLike, error) {
+	rl.SleepFunc = func() {}
+	rl.PollGameProcessFunc = func(name string) (processutil.ProcessLike, error) {
 		return &mockProcess{}, nil
 	}
+	return rl
+}
+
+func TestRunLauncher_ManagerRunning(t *testing.T) {
+	r := newTestRunLauncher()
 	mockIsManagerRunning = func(executableName string) (bool, error) {
 		return true, nil
 	}
@@ -70,20 +76,7 @@ func TestRunLauncher_ManagerRunning(t *testing.T) {
 }
 
 func TestRunLauncher_ManagerNotRunning(t *testing.T) {
-	r := &RunLauncher{
-		Config: &config.Config{
-			Global: config.GlobalConfig{
-				SleepWithManager:    5 * time.Second,
-				SleepWithoutManager: 2 * time.Second,
-				MaxPollingAttempts:  10,
-				PollingInterval:     1 * time.Second,
-			},
-		},
-	}
-	r.SleepFunc = func() {}
-	r.PollGameProcessFunc = func(name string) (processutil.ProcessLike, error) {
-		return &mockProcess{}, nil
-	}
+	r := newTestRunLauncher()
 	mockIsManagerRunning = func(executableName string) (bool, error) {
 		return false, nil
 	}
@@ -102,20 +95,7 @@ func TestRunLauncher_ManagerNotRunning(t *testing.T) {
 }
 
 func TestRunLauncher_LaunchGameError(t *testing.T) {
-	r := &RunLauncher{
-		Config: &config.Config{
-			Global: config.GlobalConfig{
-				SleepWithManager:    30 * time.Second,
-				SleepWithoutManager: 10 * time.Second,
-				MaxPollingAttempts:  10,
-				PollingInterval:     1 * time.Second,
-			},
-		},
-	}
-	r.SleepFunc = func() {}
-	r.PollGameProcessFunc = func(name string) (processutil.ProcessLike, error) {
-		return &mockProcess{}, nil
-	}
+	r := newTestRunLauncher()
 	mockIsManagerRunning = func(executableName string) (bool, error) {
 		return true, nil
 	}
