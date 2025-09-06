@@ -73,7 +73,7 @@ var ProcessesFunc = func(searchName ...string) ([]ProcessLike, error) {
 var Processes = process.Processes
 var PidExists = process.PidExists
 
-func FindGameProcess(exeName string) (ProcessLike, error) {
+func FindExecutableProcess(exeName string) (ProcessLike, error) {
 	procs, err := ProcessesFunc(exeName)
 	if err != nil {
 		return nil, fmt.Errorf("error listing processes: %v", err)

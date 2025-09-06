@@ -74,7 +74,7 @@ func TestFindGameProcess_Found(t *testing.T) {
 		return []ProcessLike{mp}, nil
 	}
 
-	proc, err := FindGameProcess("Game.exe")
+	proc, err := FindExecutableProcess("Game.exe")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -93,7 +93,7 @@ func TestFindGameProcess_ErrorFromProcessesFunc(t *testing.T) {
 		return nil, fmt.Errorf("mock error")
 	}
 
-	_, err := FindGameProcess("Game.exe")
+	_, err := FindExecutableProcess("Game.exe")
 	if err == nil || err.Error() != "error listing processes: mock error" {
 		t.Errorf("expected error from ProcessesFunc, got: %v", err)
 	}
@@ -176,7 +176,7 @@ func TestFindGameProcess_NameError(t *testing.T) {
 		return []ProcessLike{ep}, nil
 	}
 
-	_, err := FindGameProcess("Game.exe")
+	_, err := FindExecutableProcess("Game.exe")
 	if err == nil || err.Error() != "could not find a process with name: Game.exe" {
 		t.Errorf("expected not found error, got: %v", err)
 	}
