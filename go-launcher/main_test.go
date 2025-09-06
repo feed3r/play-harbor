@@ -8,6 +8,7 @@ import (
 	"github.com/feed3r/play-harbor/go-launcher/config"
 	"github.com/feed3r/play-harbor/go-launcher/processutil"
 	"github.com/feed3r/play-harbor/go-launcher/runlauncher"
+	"github.com/stretchr/testify/assert"
 )
 
 // Mock process
@@ -47,9 +48,7 @@ func newTestRunLauncher() *runlauncher.RunLauncher {
 func TestRunLauncher_MissingArgs(t *testing.T) {
 	r := newTestRunLauncher()
 	err := r.Launch([]string{})
-	if err == nil {
-		t.Error("Expected error for missing args, got nil")
-	}
+	assert.Error(t, err, "Expected error per argomenti mancanti")
 }
 
 func TestRunLauncher_CommandError(t *testing.T) {
@@ -58,9 +57,7 @@ func TestRunLauncher_CommandError(t *testing.T) {
 		return errors.New("mock error")
 	}
 	err := r.Launch([]string{"mock-url", "Game.exe"})
-	if err == nil {
-		t.Error("Expected error for command error, got nil")
-	}
+	assert.Error(t, err, "Expected error per errore comando")
 }
 
 func TestRunLauncher_ProcessNotFound(t *testing.T) {
@@ -69,15 +66,11 @@ func TestRunLauncher_ProcessNotFound(t *testing.T) {
 		return nil, errors.New("process not found")
 	}
 	err := r.Launch([]string{"mock-url", "Game.exe"})
-	if err == nil {
-		t.Error("Expected error for process not found, got nil")
-	}
+	assert.Error(t, err, "Expected error per processo non trovato")
 }
 
 func TestRunLauncher_ProcessFound(t *testing.T) {
 	r := newTestRunLauncher()
 	err := r.Launch([]string{"mock-url", "Game.exe"})
-	if err != nil {
-		t.Errorf("Expected nil error for process found, got %v", err)
-	}
+	assert.NoError(t, err, "Expected nessun errore per processo trovato")
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/feed3r/play-harbor/go-launcher/config"
 	"github.com/feed3r/play-harbor/go-launcher/processutil"
+	"github.com/stretchr/testify/assert"
 )
 
 // ProcessLike mock
@@ -36,8 +37,9 @@ func init() {
 	}
 }
 
-func TestRunLauncher_ManagerRunning(t *testing.T) {
-	r := &RunLauncher{
+// Helper per creare un RunLauncher di default per i test
+func newTestRunLauncher() *RunLauncher {
+	rl := &RunLauncher{
 		Config: &config.Config{
 			Global: config.GlobalConfig{
 				SleepWithManager:    1 * time.Millisecond,
@@ -47,10 +49,15 @@ func TestRunLauncher_ManagerRunning(t *testing.T) {
 			},
 		},
 	}
-	r.SleepFunc = func() {}
-	r.PollGameProcessFunc = func(name string) (processutil.ProcessLike, error) {
+	rl.SleepFunc = func() {}
+	rl.PollGameProcessFunc = func(name string) (processutil.ProcessLike, error) {
 		return &mockProcess{}, nil
 	}
+	return rl
+}
+
+func TestRunLauncher_ManagerRunning(t *testing.T) {
+	r := newTestRunLauncher()
 	mockIsManagerRunning = func(executableName string) (bool, error) {
 		return true, nil
 	}
@@ -65,26 +72,11 @@ func TestRunLauncher_ManagerRunning(t *testing.T) {
 	}
 
 	err := r.Launch([]string{"epic://game", "game.exe"})
-	if err != nil {
-		t.Errorf("RunLauncher con manager attivo dovrebbe restituire nil, ottenuto: %v", err)
-	}
+	assert.NoError(t, err, "RunLauncher con manager attivo dovrebbe restituire nil")
 }
 
 func TestRunLauncher_ManagerNotRunning(t *testing.T) {
-	r := &RunLauncher{
-		Config: &config.Config{
-			Global: config.GlobalConfig{
-				SleepWithManager:    5 * time.Second,
-				SleepWithoutManager: 2 * time.Second,
-				MaxPollingAttempts:  10,
-				PollingInterval:     1 * time.Second,
-			},
-		},
-	}
-	r.SleepFunc = func() {}
-	r.PollGameProcessFunc = func(name string) (processutil.ProcessLike, error) {
-		return &mockProcess{}, nil
-	}
+	r := newTestRunLauncher()
 	mockIsManagerRunning = func(executableName string) (bool, error) {
 		return false, nil
 	}
@@ -99,26 +91,11 @@ func TestRunLauncher_ManagerNotRunning(t *testing.T) {
 	}
 
 	err := r.Launch([]string{"epic://game", "game.exe"})
-	if err != nil {
-		t.Errorf("RunLauncher senza manager dovrebbe restituire nil, ottenuto: %v", err)
-	}
+	assert.NoError(t, err, "RunLauncher senza manager dovrebbe restituire nil")
 }
 
 func TestRunLauncher_LaunchGameError(t *testing.T) {
-	r := &RunLauncher{
-		Config: &config.Config{
-			Global: config.GlobalConfig{
-				SleepWithManager:    30 * time.Second,
-				SleepWithoutManager: 10 * time.Second,
-				MaxPollingAttempts:  10,
-				PollingInterval:     1 * time.Second,
-			},
-		},
-	}
-	r.SleepFunc = func() {}
-	r.PollGameProcessFunc = func(name string) (processutil.ProcessLike, error) {
-		return &mockProcess{}, nil
-	}
+	r := newTestRunLauncher()
 	mockIsManagerRunning = func(executableName string) (bool, error) {
 		return true, nil
 	}
@@ -133,7 +110,5 @@ func TestRunLauncher_LaunchGameError(t *testing.T) {
 	}
 
 	err := r.Launch([]string{"epic://game", "game.exe"})
-	if err == nil {
-		t.Error("RunLauncher dovrebbe restituire errore se LaunchGame fallisce")
-	}
+	assert.Error(t, err, "RunLauncher dovrebbe restituire errore se LaunchGame fallisce")
 }
