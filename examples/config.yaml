@@ -1,0 +1,7 @@
+EpicGamesStore:
+    executable: "EpicGamesLauncher.exe"
+Global:
+    sleep_with_manager: 10s
+    sleep_without_manager: 30s
+    max_polling_attempts: 20
+    polling_interval: 1s

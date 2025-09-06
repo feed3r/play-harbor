@@ -1,52 +1,83 @@
 package main
 
 import (
+	"errors"
 	"testing"
+	"time"
 
+	"github.com/feed3r/play-harbor/go-launcher/config"
+	"github.com/feed3r/play-harbor/go-launcher/processutil"
 	"github.com/feed3r/play-harbor/go-launcher/runlauncher"
 )
 
-func TestMissingArgs(t *testing.T) {
-	// Test RunLauncher with insufficient arguments
-	err := runlauncher.RunLauncher([]string{})
+// Mock process
+type mockProcess struct{}
+
+func (m *mockProcess) Pid() int32            { return 42 }
+func (m *mockProcess) Name() (string, error) { return "Game.exe", nil }
+
+func newTestRunLauncher() *runlauncher.RunLauncher {
+	cfg := &config.Config{
+		Global: config.GlobalConfig{
+			SleepWithManager:    1 * time.Millisecond,
+			SleepWithoutManager: 1 * time.Millisecond,
+			MaxPollingAttempts:  2,
+			PollingInterval:     1 * time.Millisecond,
+		},
+		EpicGamesStore: config.EpicGamesStoreConfig{
+			Executable: "EpicGamesLauncher.exe",
+		},
+	}
+	r := runlauncher.NewRunLauncher(cfg)
+	r.PollGameProcessFunc = func(name string) (processutil.ProcessLike, error) {
+		return &mockProcess{}, nil
+	}
+	runlauncher.IsManagerRunning = func(executableName string) (bool, error) {
+		return false, nil
+	}
+	runlauncher.LaunchGameFunc = func(url string) error {
+		return nil
+	}
+	runlauncher.WaitForProcessExitFunc = func(proc processutil.ProcessLike) error {
+		return nil
+	}
+	return r
+}
+
+func TestRunLauncher_MissingArgs(t *testing.T) {
+	r := newTestRunLauncher()
+	err := r.Launch([]string{})
 	if err == nil {
 		t.Error("Expected error for missing args, got nil")
 	}
 }
 
-func TestCommandError(t *testing.T) {
-	// Test RunLauncher with invalid URL (simulation, does not actually run on Linux)
-	err := runlauncher.RunLauncher([]string{"invalid-url", "Game.exe"})
-	// We cannot guarantee error on all platforms, but the test checks that the function is callable
+func TestRunLauncher_CommandError(t *testing.T) {
+	r := newTestRunLauncher()
+	runlauncher.LaunchGameFunc = func(url string) error {
+		return errors.New("mock error")
+	}
+	err := r.Launch([]string{"mock-url", "Game.exe"})
 	if err == nil {
-		t.Log("RunLauncher did not return error, check platform behavior")
+		t.Error("Expected error for command error, got nil")
 	}
 }
 
-func TestProcessNotFound(t *testing.T) {
-	// Simulate no process found
-	processes := []string{"other.exe", "notgame.exe"}
-	found := false
-	for _, name := range processes {
-		if name == "Game.exe" {
-			found = true
-		}
+func TestRunLauncher_ProcessNotFound(t *testing.T) {
+	r := newTestRunLauncher()
+	r.PollGameProcessFunc = func(name string) (processutil.ProcessLike, error) {
+		return nil, errors.New("process not found")
 	}
-	if found {
-		t.Error("Process should not be found")
+	err := r.Launch([]string{"mock-url", "Game.exe"})
+	if err == nil {
+		t.Error("Expected error for process not found, got nil")
 	}
 }
 
-func TestProcessFound(t *testing.T) {
-	// Simulate process found
-	processes := []string{"Game.exe", "other.exe"}
-	found := false
-	for _, name := range processes {
-		if name == "Game.exe" {
-			found = true
-		}
-	}
-	if !found {
-		t.Error("Process should be found")
+func TestRunLauncher_ProcessFound(t *testing.T) {
+	r := newTestRunLauncher()
+	err := r.Launch([]string{"mock-url", "Game.exe"})
+	if err != nil {
+		t.Errorf("Expected nil error for process found, got %v", err)
 	}
 }
