@@ -1,6 +1,7 @@
 package config
 
 import (
+	"io"
 	"os"
 	"time"
 
@@ -23,15 +24,20 @@ type GlobalConfig struct {
 	PollingInterval     time.Duration `yaml:"polling_interval"`
 }
 
+// Global mockable function to read the configuration file
+var ReadConfigFile = func(path string) (io.ReadCloser, error) {
+	return os.Open(path)
+}
+
 func LoadConfig(path string) (*Config, error) {
-	f, err := os.Open(path)
+	r, err := ReadConfigFile(path)
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer r.Close()
 
 	var cfg Config
-	decoder := yaml.NewDecoder(f)
+	decoder := yaml.NewDecoder(r)
 	if err := decoder.Decode(&cfg); err != nil {
 		return nil, err
 	}
