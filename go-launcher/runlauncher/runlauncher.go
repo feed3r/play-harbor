@@ -2,6 +2,7 @@ package runlauncher
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/feed3r/play-harbor/go-launcher/args"
@@ -26,6 +27,9 @@ var WaitForProcessExitFunc = processutil.WaitForProcessExit
 var IsManagerRunning = func(executableName string) (bool, error) {
 	procs, err := processutil.FindExecutableProcess(executableName)
 	if err != nil {
+		if strings.Contains(err.Error(), "could not find a process with name") {
+			return false, nil // Not running, but not a real error
+		}
 		return false, err
 	}
 	return procs != nil, nil
@@ -85,7 +89,7 @@ func PollGameProcess(exeName string) (processutil.ProcessLike, error) {
 		proc, err := processutil.FindExecutableProcess(exeName)
 		if err != nil {
 			return nil, err
-		} else if err == nil && proc != nil {
+		} else if proc != nil {
 			fmt.Printf("Found game process with PID %d\n", proc.Pid())
 			return proc, nil
 		}
