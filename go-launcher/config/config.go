@@ -32,7 +32,18 @@ var ReadConfigFile = func(path string) (io.ReadCloser, error) {
 func LoadConfig(path string) (*Config, error) {
 	r, err := ReadConfigFile(path)
 	if err != nil {
-		return nil, err
+		// File not found: return default config
+		return &Config{
+			Global: GlobalConfig{
+				SleepWithManager:    30 * time.Second,
+				SleepWithoutManager: 10 * time.Second,
+				MaxPollingAttempts:  10,
+				PollingInterval:     1 * time.Second,
+			},
+			EpicGamesStore: EpicGamesStoreConfig{
+				Executable: "EpicGamesLauncher.exe",
+			},
+		}, nil
 	}
 	defer r.Close()
 
