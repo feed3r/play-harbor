@@ -1,9 +1,9 @@
 package config
 
 import (
+	"bytes"
+	"io"
 	"testing"
-
-	"gopkg.in/yaml.v3"
 )
 
 const TEST_CONFIG_YAML = `EpicGamesStore:
@@ -16,9 +16,13 @@ Global:
 `
 
 func TestLoadConfig(t *testing.T) {
-	var cfg Config
-	if err := yaml.Unmarshal([]byte(TEST_CONFIG_YAML), &cfg); err != nil {
-		t.Fatalf("yaml.Unmarshal failed: %v", err)
+	ReadConfigFile = func(path string) (io.ReadCloser, error) {
+		return io.NopCloser(bytes.NewBufferString(TEST_CONFIG_YAML)), nil
+	}
+
+	cfg, err := LoadConfig("dummy_path.yaml")
+	if err != nil {
+		t.Fatalf("LoadConfig failed: %v", err)
 	}
 
 	if cfg.EpicGamesStore.Executable != "EpicGamesLauncher.exe" {
