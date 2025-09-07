@@ -3,6 +3,8 @@ package launcher
 import (
 	"os/exec"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLaunchGame_CommandMock(t *testing.T) {
@@ -10,14 +12,10 @@ func TestLaunchGame_CommandMock(t *testing.T) {
 	defer func() { ExecCommand = oldExec }()
 
 	ExecCommand = func(name string, arg ...string) *exec.Cmd {
-		if name != "rundll32" {
-			t.Errorf("expected rundll32, got %s", name)
-		}
+		assert.Equal(t, "rundll32", name, "expected rundll32")
 		return exec.Command("true") // command that does not fail
 	}
 
 	err := LaunchGame("mock-url")
-	if err != nil {
-		t.Errorf("expected no error, got %v", err)
-	}
+	assert.NoError(t, err, "expected nessun errore")
 }
