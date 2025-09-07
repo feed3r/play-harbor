@@ -1,0 +1,68 @@
+{
+	"InstallationList": [
+		{
+			"InstallLocation": "C:\\Epic Games/DeathStrandingContent",
+			"NamespaceId": "f4a904fcef2447439c35c4e6457f3027",
+			"ItemId": "c7bad4fcef1e4188b36732ed4bdf8103",
+			"ArtifactId": "84067e3ec8f149b2bbf2342d7a136065",
+			"AppVersion": "1.02",
+			"AppName": "84067e3ec8f149b2bbf2342d7a136065"
+		},
+		{
+			"InstallLocation": "C:\\Epic Games\\GTAV",
+			"NamespaceId": "0584d2013f0149a791e7b9bad0eec102",
+			"ItemId": "6e563a2c0f5f46e3b4e88b5f4ed50cca",
+			"ArtifactId": "9d2d0eb64d5c44529cece33fe2a46482",
+			"AppVersion": "1.0.3586.0",
+			"AppName": "9d2d0eb64d5c44529cece33fe2a46482"
+		},
+		{
+			"InstallLocation": "C:\\Epic Games/DeathStrandingContent",
+			"NamespaceId": "f4a904fcef2447439c35c4e6457f3027",
+			"ItemId": "678578f8abe84265b0d5f81c1997c6da",
+			"ArtifactId": "5bf67f3153364181b54cb9e40ca7fa82",
+			"AppVersion": "1.01",
+			"AppName": "5bf67f3153364181b54cb9e40ca7fa82"
+		},
+		{
+			"InstallLocation": "C:\\Epic Games/DeathStrandingContent",
+			"NamespaceId": "f4a904fcef2447439c35c4e6457f3027",
+			"ItemId": "01ced6494f3046e48b9bbb7d2874b703",
+			"ArtifactId": "f8bf1e29bbef480a9b28115ad0d644a0",
+			"AppVersion": "1.02",
+			"AppName": "f8bf1e29bbef480a9b28115ad0d644a0"
+		},
+		{
+			"InstallLocation": "C:\\Epic Games/AlanWake2",
+			"NamespaceId": "c4763f236d08423eb47b4c3008779c84",
+			"ItemId": "93f2a8c3547846eda966cb3c152a026e",
+			"ArtifactId": "dc9d2e595d0e4650b35d659f90d41059",
+			"AppVersion": "1.2.8",
+			"AppName": "dc9d2e595d0e4650b35d659f90d41059"
+		},
+		{
+			"InstallLocation": "C:\\Epic Games/DeathStrandingContent",
+			"NamespaceId": "f4a904fcef2447439c35c4e6457f3027",
+			"ItemId": "0a19424d974643f6ae6227a3ed66af2b",
+			"ArtifactId": "c311b22f878749449886949eeb588999",
+			"AppVersion": "1.01",
+			"AppName": "c311b22f878749449886949eeb588999"
+		},
+		{
+			"InstallLocation": "C:\\Epic Games/VampireSurvivors",
+			"NamespaceId": "a4e77bc04aa440a096962c14b63a41e8",
+			"ItemId": "9cc0c39d76354bd79d78f405e09cdb51",
+			"ArtifactId": "1136763135c0482cbbb4b2d45e978156",
+			"AppVersion": "EGS_WINDOWS-Release-BaseGame-1.13.113-36881652",
+			"AppName": "1136763135c0482cbbb4b2d45e978156"
+		},
+		{
+			"InstallLocation": "C:\\Epic Games/DeathStranding",
+			"NamespaceId": "f4a904fcef2447439c35c4e6457f3027",
+			"ItemId": "761fe09295aa422e8199cebaacf51675",
+			"ArtifactId": "Boga",
+			"AppVersion": "2742586.206.1",
+			"AppName": "Boga"
+		}
+	]
+}
