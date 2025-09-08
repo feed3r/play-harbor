@@ -1,1 +1,42 @@
 The file contained LauncherInstalled.dat is taken from the path c:\ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat
+
+Additional actions to find Installed Epic Games, Executables, and Building Launch Links are as following
+
+1. Locate the Epic Games installation directory:
+	 - On Linux (with Wine/Proton):
+		 ~/.wine/drive_c/Program Files/Epic Games/
+	 - On Windows:
+		 C:\Program Files\Epic Games\
+
+2. Find the manifest files:
+	 - Epic Games Launcher stores game info in .item or .manifest files, typically in:
+		 C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests\
+		 or
+		 <WinePrefix>/drive_c/ProgramData/Epic/EpicGamesLauncher/Data/Manifests/
+	 - These are JSON files containing game name, install location, and executable path.
+
+3. Parse the manifest files:
+	 - Read each manifest file and extract:
+		 - InstallLocation
+		 - LaunchExecutable
+		 - AppName or DisplayName
+	 - Example fields:
+		 {
+			 "InstallLocation": "C:/Program Files/Epic Games/GameFolder",
+			 "LaunchExecutable": "Game.exe",
+			 "AppName": "GameName"
+		 }
+
+4. Build the launch link:
+	 - Epic Games uses a URI scheme:
+		 com.epicgames.launcher://apps/<AppName>?action=launch&silent=true
+	 - Example:
+		 com.epicgames.launcher://apps/GameName?action=launch&silent=true
+
+5. Automate with a script:
+	 - Write a Go, Python, or Rust script to scan the manifest directory, parse JSON, and output the installed games with their launch links and executable paths.
+
+Summary:
+- Scan manifest files for installed games.
+- Extract install location and executable.
+- Build Epic Games Launcher URI for launching.
