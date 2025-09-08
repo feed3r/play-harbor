@@ -9,7 +9,9 @@ import (
 )
 
 type EpicGamesStoreConfig struct {
-	Executable string `yaml:"executable"`
+	Executable            string `yaml:"executable"`
+	LauncherInstalledPath string `yaml:"launcher_installed_path,omitempty"`
+	ManifestsFolderPath   string `yaml:"manifests_path,omitempty"`
 }
 
 type Config struct {
