@@ -2,8 +2,9 @@ package gamemanager
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
+
+	"github.com/spf13/afero"
 
 	"github.com/feed3r/play-harbor/go-launcher/config"
 )
@@ -18,18 +19,20 @@ type GameDescriptor struct {
 type GameManager struct {
 	Config *config.Config
 	Games  []*GameDescriptor
+	Fs     afero.Fs
 }
 
-func NewGameManager(cfg *config.Config) *GameManager {
+func NewGameManager(cfg *config.Config, fs afero.Fs) *GameManager {
 	return &GameManager{
 		Config: cfg,
+		Fs:     fs,
 	}
 }
 
 // LoadGames loads LauncherInstalled.dat, parses InstallationList,
 // and returns a map of LauncherInstalled indexed by NamespaceId.
 func (r *GameManager) LoadLauncherInstalled() (map[string]*LauncherInstalled, error) {
-	file, err := os.Open(r.Config.EpicGamesStore.LauncherInstalledPath)
+	file, err := r.Fs.Open(r.Config.EpicGamesStore.LauncherInstalledPath)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +55,7 @@ func (r *GameManager) LoadLauncherInstalled() (map[string]*LauncherInstalled, er
 }
 
 func (r *GameManager) LoadManifestFile(manifestFilePath string) (*ManifestItem, error) {
-	file, err := os.Open(manifestFilePath)
+	file, err := r.Fs.Open(manifestFilePath)
 	if err != nil {
 		return nil, err
 	}
@@ -85,19 +88,20 @@ func (r *GameManager) FillGameDescriptors() error {
 
 	for _, file := range files {
 		if !file.IsDir() {
-			manifest, err := r.LoadManifestFile(file.Name())
+			manifestPath := manifestsFolder + "/" + file.Name()
+			manifest, err := r.LoadManifestFile(manifestPath)
 			if err != nil {
 				return err
 			}
 
-			//Check that the manifest has a valid NameSpaceID
+			//Check che il manifest abbia un CatalogNamespace valido
 			if manifest.CatalogNamespace == "" || launchers[manifest.CatalogNamespace] == nil {
 				//TODO: Write some log....
 				continue
 			}
 
 			// Build the Epic URL
-			launcherGameLink := fmt.Sprintf(EpicUrl, manifest.CatalogNamespace, manifest.CatalogItemId, manifest.AppName)
+			launcherGameLink := FormatEpicUrl(manifest)
 
 			r.Games = append(r.Games, &GameDescriptor{
 				DisplayName: manifest.DisplayName,
@@ -105,7 +109,6 @@ func (r *GameManager) FillGameDescriptors() error {
 				ExeName:     manifest.LaunchExecutable,
 			})
 		}
-
 	}
 
 	return nil

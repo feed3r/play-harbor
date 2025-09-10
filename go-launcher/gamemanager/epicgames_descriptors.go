@@ -1,5 +1,7 @@
 package gamemanager
 
+import "fmt"
+
 // ManifestItem reflects the structure of ManifestExample.item
 type ManifestItem struct {
 	FormatVersion               int      `json:"FormatVersion"`
@@ -68,3 +70,8 @@ type LauncherInstalled struct {
 // EpicUrl is the URL schema to launch Epic Games Store games
 // Example: com.epicgames.launcher://apps/NamespaceId:CatalogItemId:AppId?action=launch&silent=true
 const EpicUrl = "com.epicgames.launcher://apps/%s:%s:%s?action=launch&silent=true"
+
+func FormatEpicUrl(manifest *ManifestItem) string {
+	// Helper to format EpicUrl using the constant from production code
+	return fmt.Sprintf(EpicUrl, manifest.CatalogNamespace, manifest.CatalogItemId, manifest.AppName)
+}
