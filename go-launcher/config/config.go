@@ -43,7 +43,9 @@ func LoadConfig(path string) (*Config, error) {
 				PollingInterval:     1 * time.Second,
 			},
 			EpicGamesStore: EpicGamesStoreConfig{
-				Executable: "EpicGamesLauncher.exe",
+				Executable:            "EpicGamesLauncher.exe",
+				LauncherInstalledPath: "c:\\ProgramData\\Epic\\UnrealEngineLauncher\\LauncherInstalled.dat",
+				ManifestsFolderPath:   "c:\\ProgramData\\Epic\\EpicGamesLauncher\\Data\\Manifests",
 			},
 		}, nil
 	}
