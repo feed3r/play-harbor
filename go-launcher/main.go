@@ -5,6 +5,7 @@ import (
 
 	"github.com/feed3r/play-harbor/go-launcher/config"
 	"github.com/feed3r/play-harbor/go-launcher/gamemanager"
+	"github.com/feed3r/play-harbor/go-launcher/gui"
 )
 
 // main entrypoint
@@ -20,16 +21,13 @@ func main() {
 
 	gm.FillGameDescriptors()
 
-	fmt.Println("Discovered games:")
+	// Prepare a list of game names for the GUI
+	var gameNames []string
 	for _, game := range gm.Games {
-		fmt.Printf("- %s (%s) [%s]\n", game.DisplayName, game.EpicUrl, game.ExeName)
+		gameNames = append(gameNames, game.DisplayName)
 	}
 
-	// r := runlauncher.NewRunLauncher(cfg)
-	// err = r.Launch(os.Args[1:])
-	// if err != nil {
-	// 	fmt.Println("ERROR:", err)
-	// 	fmt.Println("Usage: playdock.exe <epicUrl> <exeName>")
-	// }
+	// Show the GUI window with the games list
+	gui.ShowGamesWindow(gameNames)
 
 }
