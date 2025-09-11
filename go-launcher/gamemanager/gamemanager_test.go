@@ -1,27 +1,25 @@
 package gamemanager
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/feed3r/play-harbor/go-launcher/config"
-	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewGameManager(t *testing.T) {
 	cfg := &config.Config{}
-	fs := afero.NewMemMapFs()
-	gm := NewGameManager(cfg, fs)
+	gm := NewGameManager(cfg)
 	assert.NotNil(t, gm)
 	assert.Equal(t, cfg, gm.Config)
-	assert.Equal(t, fs, gm.Fs)
 }
 
 func TestLoadLauncherInstalled_EmptyDir(t *testing.T) {
 	cfg := &config.Config{}
 	cfg.EpicGamesStore.LauncherInstalledPath = "/not-exist-dir"
-	fs := afero.NewMemMapFs()
-	gm := NewGameManager(cfg, fs)
+	gm := NewGameManager(cfg)
 	items, err := gm.LoadLauncherInstalled()
 	assert.Error(t, err)
 	assert.Nil(t, items)
@@ -29,31 +27,28 @@ func TestLoadLauncherInstalled_EmptyDir(t *testing.T) {
 
 func TestLoadManifestFile_NotFound(t *testing.T) {
 	cfg := &config.Config{}
-	fs := afero.NewMemMapFs()
-	gm := NewGameManager(cfg, fs)
-	_, err := gm.LoadManifestFile("/tmp/notfound.json")
+	gm := NewGameManager(cfg)
+	_, err := gm.LoadManifestFile("tmp_notfound.json")
 	assert.Error(t, err)
 }
 
 func TestFillGameDescriptors_Empty(t *testing.T) {
 	cfg := &config.Config{}
 	cfg.EpicGamesStore.ManifestsFolderPath = "/not-exist-dir"
-	fs := afero.NewMemMapFs()
-	gm := NewGameManager(cfg, fs)
+	gm := NewGameManager(cfg)
 	err := gm.FillGameDescriptors()
 	assert.Error(t, err)
 }
 
 func TestLoadLauncherInstalled_ValidFile(t *testing.T) {
-	fs := afero.NewMemMapFs()
-	path := "/LauncherInstalled.dat"
+	path := "LauncherInstalled_test.dat"
 	content := `{"InstallationList": [{"NamespaceId": "test-ns", "InstallLocation": "/games/test", "AppName": "TestApp"}]}`
-	err := afero.WriteFile(fs, path, []byte(content), 0644)
+	err := ioutil.WriteFile(path, []byte(content), 0644)
 	assert.NoError(t, err)
 
 	cfg := &config.Config{}
 	cfg.EpicGamesStore.LauncherInstalledPath = path
-	gm := NewGameManager(cfg, fs)
+	gm := NewGameManager(cfg)
 	items, err := gm.LoadLauncherInstalled()
 	assert.NoError(t, err)
 	assert.NotNil(t, items)
@@ -63,14 +58,13 @@ func TestLoadLauncherInstalled_ValidFile(t *testing.T) {
 }
 
 func TestLoadManifestFile_ValidFile(t *testing.T) {
-	fs := afero.NewMemMapFs()
-	path := "/manifest.json"
+	path := "manifest_test.json"
 	content := `{"DisplayName": "Test Game", "AppName": "TestApp", "CatalogNamespace": "ns1", "InstallLocation": "/games/test"}`
-	err := afero.WriteFile(fs, path, []byte(content), 0644)
+	err := ioutil.WriteFile(path, []byte(content), 0644)
 	assert.NoError(t, err)
 
 	cfg := &config.Config{}
-	gm := NewGameManager(cfg, fs)
+	gm := NewGameManager(cfg)
 	item, err := gm.LoadManifestFile(path)
 	assert.NoError(t, err)
 	assert.NotNil(t, item)
@@ -81,23 +75,22 @@ func TestLoadManifestFile_ValidFile(t *testing.T) {
 }
 
 func TestFillGameDescriptors_PopulatesGames(t *testing.T) {
-	fs := afero.NewMemMapFs()
-	manifestDir := "/manifests"
-	_ = fs.Mkdir(manifestDir, 0755)
+	manifestDir := "manifests_test"
+	_ = os.Mkdir(manifestDir, 0755)
 	manifestPath := manifestDir + "/game1.json"
 	manifestContent := `{"DisplayName": "Test Game", "AppName": "TestApp", "CatalogNamespace": "ns1", "InstallLocation": "/games/test"}`
-	err := afero.WriteFile(fs, manifestPath, []byte(manifestContent), 0644)
+	err := ioutil.WriteFile(manifestPath, []byte(manifestContent), 0644)
 	assert.NoError(t, err)
 
 	launcherPath := "/LauncherInstalled.dat"
 	launcherContent := `{"InstallationList": [{"NamespaceId": "ns1", "InstallLocation": "/games/test", "AppName": "TestApp"}]}`
-	err = afero.WriteFile(fs, launcherPath, []byte(launcherContent), 0644)
+	err = ioutil.WriteFile(launcherPath, []byte(launcherContent), 0644)
 	assert.NoError(t, err)
 
 	cfg := &config.Config{}
 	cfg.EpicGamesStore.ManifestsFolderPath = manifestDir
 	cfg.EpicGamesStore.LauncherInstalledPath = launcherPath
-	gm := NewGameManager(cfg, fs)
+	gm := NewGameManager(cfg)
 	err = gm.FillGameDescriptors()
 	assert.NoError(t, err)
 	assert.NotNil(t, gm.Games)
@@ -106,46 +99,44 @@ func TestFillGameDescriptors_PopulatesGames(t *testing.T) {
 }
 
 func TestFillGameDescriptors_ManifestWithoutLauncherInstalled(t *testing.T) {
-	fs := afero.NewMemMapFs()
-	manifestDir := "/manifests"
-	_ = fs.Mkdir(manifestDir, 0755)
+	manifestDir := "manifests_test2"
+	_ = os.Mkdir(manifestDir, 0755)
 	manifestPath := manifestDir + "/game2.json"
 	manifestContent := `{"DisplayName": "Orphan Game", "AppName": "OrphanApp", "CatalogNamespace": "missing-ns", "InstallLocation": "/games/orphan"}`
-	err := afero.WriteFile(fs, manifestPath, []byte(manifestContent), 0644)
+	err := ioutil.WriteFile(manifestPath, []byte(manifestContent), 0644)
 	assert.NoError(t, err)
 
 	launcherPath := "/LauncherInstalled.dat"
 	launcherContent := `{"InstallationList": [{"NamespaceId": "ns1", "InstallLocation": "/games/test", "AppName": "TestApp"}]}`
-	err = afero.WriteFile(fs, launcherPath, []byte(launcherContent), 0644)
+	err = ioutil.WriteFile(launcherPath, []byte(launcherContent), 0644)
 	assert.NoError(t, err)
 
 	cfg := &config.Config{}
 	cfg.EpicGamesStore.ManifestsFolderPath = manifestDir
 	cfg.EpicGamesStore.LauncherInstalledPath = launcherPath
-	gm := NewGameManager(cfg, fs)
+	gm := NewGameManager(cfg)
 	err = gm.FillGameDescriptors()
 	assert.NoError(t, err)
 	assert.Len(t, gm.Games, 0)
 }
 
 func TestFillGameDescriptors_EndToEnd(t *testing.T) {
-	fs := afero.NewMemMapFs()
-	manifestDir := "/manifests"
-	_ = fs.Mkdir(manifestDir, 0755)
+	manifestDir := "manifests_test3"
+	_ = os.Mkdir(manifestDir, 0755)
 	manifestPath := manifestDir + "/game1.json"
 	manifestContent := `{"DisplayName": "End2End Game", "AppName": "End2EndApp", "CatalogNamespace": "ns-end2end", "InstallLocation": "/games/end2end", "LaunchExecutable": "end2end.exe", "CatalogItemId": "item123"}`
-	err := afero.WriteFile(fs, manifestPath, []byte(manifestContent), 0644)
+	err := ioutil.WriteFile(manifestPath, []byte(manifestContent), 0644)
 	assert.NoError(t, err)
 
 	launcherPath := "/LauncherInstalled.dat"
 	launcherContent := `{"InstallationList": [{"NamespaceId": "ns-end2end", "InstallLocation": "/games/end2end", "AppName": "End2EndApp"}]}`
-	err = afero.WriteFile(fs, launcherPath, []byte(launcherContent), 0644)
+	err = ioutil.WriteFile(launcherPath, []byte(launcherContent), 0644)
 	assert.NoError(t, err)
 
 	cfg := &config.Config{}
 	cfg.EpicGamesStore.ManifestsFolderPath = manifestDir
 	cfg.EpicGamesStore.LauncherInstalledPath = launcherPath
-	gm := NewGameManager(cfg, fs)
+	gm := NewGameManager(cfg)
 	err = gm.FillGameDescriptors()
 	assert.NoError(t, err)
 	assert.NotNil(t, gm.Games)

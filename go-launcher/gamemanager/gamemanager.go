@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/spf13/afero"
-
 	"github.com/feed3r/play-harbor/go-launcher/config"
 )
 
@@ -19,20 +17,18 @@ type GameDescriptor struct {
 type GameManager struct {
 	Config *config.Config
 	Games  []*GameDescriptor
-	Fs     afero.Fs
 }
 
-func NewGameManager(cfg *config.Config, fs afero.Fs) *GameManager {
+func NewGameManager(cfg *config.Config) *GameManager {
 	return &GameManager{
 		Config: cfg,
-		Fs:     fs,
 	}
 }
 
 // LoadGames loads LauncherInstalled.dat, parses InstallationList,
 // and returns a map of LauncherInstalled indexed by NamespaceId.
 func (r *GameManager) LoadLauncherInstalled() (map[string]*LauncherInstalled, error) {
-	file, err := r.Fs.Open(r.Config.EpicGamesStore.LauncherInstalledPath)
+	file, err := os.Open(r.Config.EpicGamesStore.LauncherInstalledPath)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +51,7 @@ func (r *GameManager) LoadLauncherInstalled() (map[string]*LauncherInstalled, er
 }
 
 func (r *GameManager) LoadManifestFile(manifestFilePath string) (*ManifestItem, error) {
-	file, err := r.Fs.Open(manifestFilePath)
+	file, err := os.Open(manifestFilePath)
 	if err != nil {
 		return nil, err
 	}
