@@ -21,8 +21,12 @@ func ShowGamesWindow(games []string) {
 			o.(*widget.Label).SetText(games[i])
 		},
 	)
+	if len(games) > 0 {
+		list.Select(0)
+	}
 
-	content := container.NewVBox(label, list)
+	// Use a border container to put the label at the top and let the list expand
+	content := container.NewBorder(label, nil, nil, nil, list)
 	w.SetContent(content)
 	w.ShowAndRun()
 }

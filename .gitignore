@@ -10,6 +10,9 @@ go-launcher/playdock.exe
 go-launcher/steamlauncher.exe
 go-launcher/go-launcher.exe
 
+# Go debug binaries
+go-launcher/*_debug_bin*
+
 
 # Editor/OS files
 *.swp
