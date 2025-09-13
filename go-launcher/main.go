@@ -28,6 +28,6 @@ func main() {
 	}
 
 	// Show the GUI window with the games list
-	gui.ShowGamesWindow(gameNames)
+	gui.ShowGamesWindow(gm.Games)
 
 }
