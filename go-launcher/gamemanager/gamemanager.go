@@ -2,6 +2,7 @@ package gamemanager
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/feed3r/play-harbor/go-launcher/config"
@@ -104,6 +105,7 @@ func (r *GameManager) FillGameDescriptors() error {
 				EpicUrl:     launcherGameLink,
 				ExeName:     manifest.LaunchExecutable,
 			})
+			fmt.Printf("Found game: %s, URL: %s, Exe: %s\n", manifest.DisplayName, launcherGameLink, manifest.LaunchExecutable)
 		}
 	}
 

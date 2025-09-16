@@ -1,3 +1,9 @@
+
+Alan wake launcher params:
+
+		"com.epicgames.launcher://apps/c4763f236d08423eb47b4c3008779c84:93f2a8c3547846eda966cb3c152a026e:dc9d2e595d0e4650b35d659f90d41059?action=launch&silent=true",
+		"AlanWake2.exe",
+
 The file contained LauncherInstalled.dat is taken from the path c:\ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat
 
 Additional actions to find Installed Epic Games, Executables, and Building Launch Links are as following
