@@ -91,7 +91,7 @@ func (r *RunLauncher) PollGameProcess(exeName string) (processutil.ProcessLike, 
 	for pollingTrialCounter > 0 {
 		pollingTrialCounter--
 		proc, err := processutil.FindExecutableProcess(exeName)
-		if err != nil {
+		if err != nil && !strings.Contains(err.Error(), "could not find a process with name") {
 			return nil, err
 		} else if proc != nil {
 			fmt.Printf("Found game process with PID %d\n", proc.Pid())

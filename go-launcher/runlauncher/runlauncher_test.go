@@ -56,6 +56,48 @@ func newTestRunLauncher() *RunLauncher {
 	return rl
 }
 
+func TestRunLauncher_PollGameProcess_RetriesOnNotFound(t *testing.T) {
+	oldProcessesFunc := processutil.ProcessesFunc
+	defer func() { processutil.ProcessesFunc = oldProcessesFunc }()
+
+	calls := 0
+	processutil.ProcessesFunc = func(searchName ...string) ([]processutil.ProcessLike, error) {
+		calls++
+		if calls < 3 {
+			return nil, nil // not found yet
+		}
+		return []processutil.ProcessLike{&mockProcess{}}, nil
+	}
+
+	r := newTestRunLauncher()
+	r.Config.Global.MaxPollingAttempts = 5
+	r.Config.Global.PollingInterval = 1 * time.Millisecond
+
+	proc, err := r.PollGameProcess("game.exe")
+	assert.NoError(t, err, "a process not found yet should not abort polling")
+	assert.NotNil(t, proc)
+	assert.GreaterOrEqual(t, calls, 3, "should retry until the process appears")
+}
+
+func TestRunLauncher_PollGameProcess_PropagatesRealError(t *testing.T) {
+	oldProcessesFunc := processutil.ProcessesFunc
+	defer func() { processutil.ProcessesFunc = oldProcessesFunc }()
+
+	calls := 0
+	processutil.ProcessesFunc = func(searchName ...string) ([]processutil.ProcessLike, error) {
+		calls++
+		return nil, errors.New("boom")
+	}
+
+	r := newTestRunLauncher()
+	r.Config.Global.MaxPollingAttempts = 5
+	r.Config.Global.PollingInterval = 1 * time.Millisecond
+
+	_, err := r.PollGameProcess("game.exe")
+	assert.Error(t, err, "a real enumeration error must not be confused with 'process not found'")
+	assert.Equal(t, 1, calls, "a real error must abort polling immediately")
+}
+
 func TestRunLauncher_ManagerRunning(t *testing.T) {
 	r := newTestRunLauncher()
 	mockIsManagerRunning = func(executableName string) (bool, error) {
