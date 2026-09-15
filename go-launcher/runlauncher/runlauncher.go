@@ -18,12 +18,14 @@ type RunLauncher struct {
 }
 
 func NewRunLauncher(cfg *config.Config) *RunLauncher {
-	return &RunLauncher{
+	r := &RunLauncher{
 		Config: cfg,
 		SleepFunc: func() {
 			time.Sleep(cfg.Global.SleepWithoutManager)
 		},
 	}
+	r.PollGameProcessFunc = r.PollGameProcess
+	return r
 }
 
 // Global function variables to allow mocking in tests

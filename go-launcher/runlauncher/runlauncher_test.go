@@ -56,6 +56,18 @@ func newTestRunLauncher() *RunLauncher {
 	return rl
 }
 
+func TestNewRunLauncher_WiresPollGameProcessFunc(t *testing.T) {
+	cfg := &config.Config{
+		Global: config.GlobalConfig{
+			SleepWithoutManager: 1 * time.Millisecond,
+			MaxPollingAttempts:  1,
+			PollingInterval:     1 * time.Millisecond,
+		},
+	}
+	r := NewRunLauncher(cfg)
+	assert.NotNil(t, r.PollGameProcessFunc, "NewRunLauncher must wire PollGameProcessFunc, otherwise Launch panics on a nil call")
+}
+
 func TestRunLauncher_PollGameProcess_RetriesOnNotFound(t *testing.T) {
 	oldProcessesFunc := processutil.ProcessesFunc
 	defer func() { processutil.ProcessesFunc = oldProcessesFunc }()
