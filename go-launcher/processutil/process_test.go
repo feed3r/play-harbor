@@ -109,17 +109,23 @@ func TestWaitForProcessExit_WaitsThenExits(t *testing.T) {
 	assert.GreaterOrEqual(t, calls, 3, "attese almeno 3 chiamate")
 }
 
-func TestWaitForProcessExit_ErrorFromPidExists(t *testing.T) {
+func TestWaitForProcessExit_TransientErrorFromPidExists(t *testing.T) {
 	oldPidExists := PidExists
 	defer func() { PidExists = oldPidExists }()
+	calls := 0
 	PidExists = func(pid int32) (bool, error) {
-		return false, fmt.Errorf("mock pidexists error")
+		calls++
+		if calls < 3 {
+			return false, fmt.Errorf("mock pidexists error")
+		}
+		return false, nil
 	}
 
 	proc := &process.Process{Pid: 77}
 	w := &processWrapper{p: proc}
 	err := WaitForProcessExit(w)
-	assert.NoError(t, err, "WaitForProcessExit dovrebbe ignorare l'errore")
+	assert.NoError(t, err, "expected no error")
+	assert.GreaterOrEqual(t, calls, 3, "a transient error must not be treated as the process having exited")
 }
 
 type errorNameProcess struct {

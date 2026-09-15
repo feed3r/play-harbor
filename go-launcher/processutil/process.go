@@ -91,8 +91,8 @@ func FindExecutableProcess(exeName string) (ProcessLike, error) {
 
 func WaitForProcessExit(proc ProcessLike) error {
 	for {
-		exists, _ := PidExists(proc.Pid())
-		if !exists {
+		exists, err := PidExists(proc.Pid())
+		if err == nil && !exists {
 			break
 		}
 		time.Sleep(2 * time.Second)
